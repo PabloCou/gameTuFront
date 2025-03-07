@@ -9,7 +9,7 @@ interface GameOffer {
   title: string;
   imageUrl: string;
   price: number;
-  description: string;
+  description?: string;
   platform: string;
   genre: string;
   developer: string;
