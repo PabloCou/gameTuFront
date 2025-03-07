@@ -1,21 +1,20 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import Offer from "../models/Offer";
-import { OfferService } from "../services/offer.services";
+import GameOffer from "../models/GameOffer";
+import { GameOfferService } from "../services/gameoffer.services";
 import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-function OfferList() {
-  const [offers, setOffers] = useState<Offer[]>();
+function GameOfferList() {
+  const [gameOffers, setGameOffers] = useState<GameOffer[]>();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  //const [titleQuery, setTitleQuery] = useState(null)
 
   const [queryParams, setQueryParams] = useSearchParams();
   const titleQuery = queryParams.get("title") || "";
 
   useEffect(() => {
-    OfferService.search(titleQuery)
-      .then(setOffers)
+    GameOfferService.search(titleQuery)
+      .then(setGameOffers)
       .catch((error) => setError(error.message))
       .finally(() => setLoading(false));
   }, [titleQuery]);
@@ -26,13 +25,12 @@ function OfferList() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("¿Estás seguro que quieres borrar esta oferta?"))
-      return;
+    if (!window.confirm("¿Estás seguro que quieres borrar esta oferta de juego?")) return;
 
     try {
-      await OfferService.delete(id);
-      setOffers(offers?.filter((offer) => offer.id !== id));
-      toast.success("Oferta borrada correctamente!");
+      await GameOfferService.delete(id);
+      setGameOffers(gameOffers?.filter((offer) => offer.id !== id));
+      toast.success("Oferta de juego borrada correctamente!");
     } catch (error) {
       setError(error instanceof Error ? error.message : "Error desconocido");
     }
@@ -40,14 +38,12 @@ function OfferList() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-4xl font-extrabold dark:text-white">
-        Lista de ofertas
-      </h2>
+      <h2 className="text-4xl font-extrabold dark:text-white">Lista de ofertas de videojuegos</h2>
       <Link
-        to="/offers/new"
+        to="/game-offers/new"
         className="text-white w-fit bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Añadir nueva oferta
+        Añadir nueva oferta de videojuego
       </Link>
 
       <label
@@ -85,40 +81,51 @@ function OfferList() {
           type="submit"
           className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          Search
+          Buscar
         </button>
       </div>
 
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-      {offers?.length === 0 && <p>No hay ofertas disponibles</p>}
+      {gameOffers?.length === 0 && <p>No hay ofertas disponibles</p>}
       <div className="flex flex-wrap flex-row gap-4 items-center justify-center">
-
-      {offers?.map((offer) => (
-        <div key={offer.id} className="">
-          <div
-  
-            className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
-          >
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {offer.title}
-            </h5>
-            <p className="font-normal text-gray-700 dark:text-gray-400">
-              {offer.description}
-            </p>
-            <div className="flex items-center justify-center gap-4 mt-4">
-
-            <Link className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" to={`/offers/${offer.id}`}>Ver</Link>
-            <Link className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" to={`/offers/edit/${offer.id}`}>Editar</Link>
-            <button className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => handleDelete(offer.id)}>Borrar</button>
+        {gameOffers?.map((offer) => (
+          <div key={offer.id} className="">
+            <div
+              className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+            >
+              <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                {offer.title}
+              </h5>
+              <img src={offer.imageUrl} alt={offer.title} className="w-full h-auto rounded-lg mb-2" />
+              <p className="font-normal text-gray-700 dark:text-gray-400">{offer.description}</p>
+              <p className="font-bold text-lg mt-2">Precio: {offer.price.toFixed(2)} €</p>
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <Link
+                  to={`/game-offers/${offer.id}`}
+                  className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Ver
+                </Link>
+                <Link
+                  to={`/game-offers/edit/${offer.id}`}
+                  className="px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-green focus:outline-none focus:ring-green dark:bg-green-dark:hover:bg-green-dark:focus:ring-green-dark"
+                >
+                  Editar
+                </Link>
+                <button
+                  onClick={() => handleDelete(offer.id)}
+                  className="px-3 py-2 text-sm font-medium text-center text-white bg-red rounded-lg hover:red-focus:outline-none "
+                >
+                  Borrar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-            </div>
-
+        ))}
+      </div>
     </div>
   );
 }
 
-export default OfferList;
+export default GameOfferList;
