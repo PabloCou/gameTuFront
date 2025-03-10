@@ -6,7 +6,7 @@ function Home() {
   return (
     <div className="bg-gray-100 dark:bg-gray-900">
       {/* Hero Section */}
-      <header className="bg-blue-600 dark:bg-blue-800 text-white text-center py-16 px-6">
+      <header className="dark:bg-orange-400 bg-amber-400 text-white text-center py-16 px-6">
         <h1 className="text-5xl font-extrabold">¡Bienvenido a GameTu!</h1>
         <p className="mt-4 text-lg">
           Encuentra las mejores ofertas en videojuegos para todas las plataformas y ahorra mientras disfrutas de tus títulos favoritos.
@@ -14,7 +14,7 @@ function Home() {
         {!isAuthenticated && (
           <Link
             to="/register"
-            className="mt-6 inline-block bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200 transition"
+            className="mt-6 inline-block bg-white text-orange-400 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-200 transition"
           >
             ¡Únete ahora y no te pierdas ninguna oferta!
           </Link>
@@ -59,7 +59,7 @@ function Home() {
         {!isAuthenticated && (
           <Link
             to="/register"
-            className="mt-10 inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition"
+            className="mt-10 inline-block bg-orange-400 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-orange-600 transition"
           >
             ¡Regístrate Ahora!
           </Link>
