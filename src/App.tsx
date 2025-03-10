@@ -29,10 +29,10 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/userList" element={<UserList />} />
-              <Route path="/offers" element={<GameOfferList />} />
-              <Route path="/offers/:id" element={<GameOfferDetail />} />
-              <Route path="/offers/new" element={<GameOfferForm />} />
-              <Route path="/offers/edit/:id" element={<GameOfferForm />} />
+              <Route path="/game-offers" element={<GameOfferList />} />
+              <Route path="/game-offers/:id" element={<GameOfferDetail />} />
+              <Route path="/game-offers/new" element={<GameOfferForm />} />
+              <Route path="/game-offers/edit/:id" element={<GameOfferForm />} />
               <Route path="/categories" element={<CategoryManager />} />
             </Routes>
           </div>

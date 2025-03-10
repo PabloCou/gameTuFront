@@ -23,45 +23,31 @@ function Profile() {
       </h2>
       {error && <p className="text-red-500">{error}</p>}
       {loading ? (
-        <p>Cargando...</p>
+        <p className="text-gray-700 dark:text-gray-300">Cargando...</p>
+      ) : user ? (
+        <div className="space-y-4">
+          <ProfileField label="Nombre" value={user.name} />
+          {user.surname && <ProfileField label="Apellidos" value={user.surname} />}
+          <ProfileField label="Correo Electrónico" value={user.email} />
+          <ProfileField label="Rol" value={user.role || "Usuario estándar"} />
+          <ProfileField label="Activado" value={user.active ? "Sí" : "No"} />
+          <ProfileField
+            label="Recibe notificaciones por email"
+            value={user.accepNotifications ? "Sí" : "No"}
+          />
+        </div>
       ) : (
-        user && (
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Nombre</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.name}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Apellidos</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.surname}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Correo Electrónico</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.email}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Rol</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.role}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Curso</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.course}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Activado</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.active?'SI':'NO'}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Recibe notificaciones por email</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {user.accepNotifications ? "Sí" : "No"}
-              </p>
-            </div>
-          </div>
-        )
+        <p className="text-gray-700 dark:text-gray-300">No se encontró información del usuario.</p>
       )}
     </div>
   );
 }
+
+const ProfileField = ({ label, value }: { label: string; value: string }) => (
+  <div>
+    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
+    <p className="text-lg font-semibold text-gray-900 dark:text-white">{value}</p>
+  </div>
+);
 
 export default Profile;
