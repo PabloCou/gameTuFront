@@ -26,7 +26,7 @@ function Navbar() {
 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
   <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo"/>
+      <img src="https://us.123rf.com/450wm/valentint/valentint1608/valentint160800806/60999573-icono-gamepad-bot%C3%B3n-de-internet-sobre-fondo-blanco.jpg?ver=6" className="h-8" alt="Logo GameTu"/>
       <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">GameTu</span>
   </Link>
   <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">

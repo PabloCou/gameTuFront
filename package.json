@@ -1,10 +1,11 @@
 {
-  "name": "empleatetufront",
+  "name": "gametufront",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "start": "vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
