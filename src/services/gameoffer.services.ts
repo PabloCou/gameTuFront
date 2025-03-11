@@ -1,11 +1,12 @@
 import GameOffer from "../models/GameOffer";
 import { fetchAPI } from "../utils/FetchAPI";
 
-const API_URL_BASE = import.meta.env.VITE_API_URL_BASE;
+// Verifica si la variable de entorno API_URL_BASE está correctamente definida
+const API_URL_BASE = import.meta.env.VITE_API_URL_BASE || 'http://localhost:3000'; // Usa localhost como predeterminado si no está definida
 
 export class GameOfferService {
     static async search(title?: string, platform?: string, genre?: string): Promise<GameOffer[]> {
-        let url = `${API_URL_BASE}/game-offers?`;
+        let url = `${API_URL_BASE}/api/game-offers?`; // Usa la URL base directamente
         if (title) url += `title=${encodeURIComponent(title)}&`;
         if (platform) url += `platform=${encodeURIComponent(platform)}&`;
         if (genre) url += `genre=${encodeURIComponent(genre)}&`;
@@ -28,7 +29,7 @@ export class GameOfferService {
 
     static async getById(id: number): Promise<GameOffer> {
         try {
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
+            const response = await fetchAPI(`${API_URL_BASE}/api/game-offers/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -45,11 +46,10 @@ export class GameOfferService {
 
     static async create(gameOffer: Partial<GameOffer>): Promise<GameOffer> {
         try {
-            // Agregamos logs para debug
             console.log('Datos a enviar:', gameOffer);
-            console.log('URL de la petición:', `${API_URL_BASE}/game-offers/new`);
+            console.log('URL de la petición:', `${API_URL_BASE}/api/game-offers/new`);  // Asegúrate de que la URL sea correcta
 
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers/new`, {
+            const response = await fetchAPI(`${API_URL_BASE}/api/game-offers/new`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +60,6 @@ export class GameOfferService {
       
             return response as GameOffer;
         } catch (error) {
-            // Mejorar el manejo de errores
             if (error instanceof Error) {
                 console.error('Error al crear la oferta:', error.message);
                 if (error.message.includes('401')) {
@@ -77,7 +76,7 @@ export class GameOfferService {
 
     static async update(id: number, gameOffer: Partial<GameOffer>): Promise<GameOffer> {
         try {
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
+            const response = await fetchAPI(`${API_URL_BASE}/api/game-offers/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,7 +94,7 @@ export class GameOfferService {
 
     static async delete(id: number): Promise<void> {
         try {
-            await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
+            await fetchAPI(`${API_URL_BASE}/api/game-offers/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -108,10 +107,9 @@ export class GameOfferService {
         }
     }
 
-    // Nuevos métodos para calificaciones
     static async rateOffer(id: number, rating: number): Promise<void> {
         try {
-            await fetchAPI(`${API_URL_BASE}/game-offers/${id}/rate`, {
+            await fetchAPI(`${API_URL_BASE}/api/game-offers/${id}/rate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -127,7 +125,7 @@ export class GameOfferService {
 
     static async getOfferRate(id: number): Promise<number> {
         try {
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}/rate`, {
+            const response = await fetchAPI(`${API_URL_BASE}/api/game-offers/${id}/rate`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -143,7 +141,7 @@ export class GameOfferService {
 
     static async getMyRate(id: number): Promise<number> {
         try {
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}/myRate`, {
+            const response = await fetchAPI(`${API_URL_BASE}/api/game-offers/${id}/myRate`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

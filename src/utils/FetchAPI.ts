@@ -1,7 +1,11 @@
 export const fetchAPI = async (endPoint: string, options = {}) => {
   try {
-    console.log(`Realizando petición a: ${endPoint}`, options);
-    const response = await fetch(endPoint, options);
+    // Ajustar la URL base aquí
+    const baseURL = 'http://localhost:3000'; // Asegúrate de que la URL base sea correcta
+    const url = `${baseURL}${endPoint}`; // Concatenamos la baseURL con el endpoint
+
+    console.log(`Realizando petición a: ${url}`, options);
+    const response = await fetch(url, options);  // Usamos la URL correcta
     console.log(`Respuesta recibida: ${response.status} ${response.statusText}`);
 
     if (response.status === 401) {
