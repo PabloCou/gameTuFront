@@ -4,7 +4,6 @@ export default interface User{
     surname?: string
     email: string
     password: string
-    course?: string
     active: boolean
     accepNotifications: boolean
     role: string

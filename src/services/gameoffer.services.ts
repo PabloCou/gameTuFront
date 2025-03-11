@@ -18,9 +18,16 @@ export class GameOfferService {
                 },
                 credentials: 'include'
             });
-            return response as GameOffer[];
+
+            // Verifica que la respuesta es válida (código 2xx) y devuelve los datos en JSON
+            if (!response.ok) {
+                const errorText = await response.text();  // Extrae el cuerpo de la respuesta como texto
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
+
+            return response.json() as GameOffer[];  // Convierte la respuesta a JSON
         } catch (error) {
-            console.error(error);
+            console.error('Error en search:', error);
             throw new Error('Error al obtener las ofertas de juegos.');
         }
     }
@@ -34,9 +41,16 @@ export class GameOfferService {
                 },
                 credentials: 'include'
             });
-            return response as GameOffer;
+
+            // Verifica la respuesta
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
+
+            return response.json() as GameOffer;
         } catch (error) {
-            console.error(error);
+            console.error('Error en getById:', error);
             throw new Error(`Error al obtener la oferta de juego con ID ${id}.`);
         }
     }
@@ -51,9 +65,15 @@ export class GameOfferService {
                 body: JSON.stringify(gameOffer),
                 credentials: 'include'
             });
-            return response as GameOffer;
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
+
+            return response.json() as GameOffer;
         } catch (error) {
-            console.error(error);
+            console.error('Error en create:', error);
             throw new Error('Error al crear la oferta de juego.');
         }
     }
@@ -68,24 +88,35 @@ export class GameOfferService {
                 body: JSON.stringify(gameOffer),
                 credentials: 'include'
             });
-            return response as GameOffer;
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
+
+            return response.json() as GameOffer;
         } catch (error) {
-            console.error(error);
+            console.error('Error en update:', error);
             throw new Error(`Error al actualizar la oferta de juego con ID ${id}.`);
         }
     }
 
     static async delete(id: number): Promise<void> {
         try {
-            await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
+            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include'
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
         } catch (error) {
-            console.error(error);
+            console.error('Error en delete:', error);
             throw new Error(`Error al eliminar la oferta de juego con ID ${id}.`);
         }
     }
