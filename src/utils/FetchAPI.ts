@@ -1,7 +1,7 @@
 export const fetchAPI = async (endPoint: string, options = {}) => {
   try {
-    // Ajustar la URL base aquí
-    const baseURL = 'http://localhost:3000'; // Asegúrate de que la URL base sea correcta
+    // Usar la variable de entorno para la URL base
+    const baseURL = import.meta.env.VITE_API_URL_BASE || 'http://localhost:3000'; // Usa localhost como predeterminado si no está definida
     const url = `${baseURL}${endPoint}`; // Concatenamos la baseURL con el endpoint
 
     console.log(`Realizando petición a: ${url}`, options);

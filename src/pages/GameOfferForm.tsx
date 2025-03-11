@@ -1,11 +1,11 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import GameOffer from '../models/GameOffer'
-import { GameOfferService } from '../services/gameoffer.services'
-import { useNavigate, useParams } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import InputForm from '../components/InputForm'
-import ErrorMsgData from '../utils/ErrorMsgData'
-import TextAreaInputForm from '../components/TextAreaInputForm'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import GameOffer from '../models/GameOffer';
+import { GameOfferService } from '../services/gameoffer.services';
+import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import InputForm from '../components/InputForm';
+import ErrorMsgData from '../utils/ErrorMsgData';
+import TextAreaInputForm from '../components/TextAreaInputForm';
 
 function GameOfferForm() {
   const [form, setForm] = useState<Partial<GameOffer>>({
@@ -21,6 +21,7 @@ function GameOfferForm() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Cargar los datos del juego cuando estamos en modo de edición
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -28,7 +29,7 @@ function GameOfferForm() {
         .then((data) =>
           setForm({
             ...data,
-            releaseDate: new Date(data.releaseDate || '').toISOString().slice(0, 16),
+            releaseDate: new Date(data.releaseDate || '').toISOString().slice(0, 10), // Asegúrate de que la fecha esté en formato correcto
           })
         )
         .catch((error) => setErrors({ message: error.message }))
@@ -36,31 +37,40 @@ function GameOfferForm() {
     }
   }, [id]);
 
+  // Validar y enviar el formulario
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setErrors({}); // Limpiar errores al enviar el formulario
+
+    // Validar la fecha de lanzamiento
+    const formattedReleaseDate = new Date(form.releaseDate || '');
+    if (isNaN(formattedReleaseDate.getTime())) {
+      setErrors({ message: 'Fecha de lanzamiento inválida.' });
+      setLoading(false);
+      return;
+    }
+
+    // Validar el precio (debe ser un número positivo)
+    const price = parseFloat(form.price?.toString() || '0');
+    if (price <= 0) {
+      setErrors({ price: 'El precio debe ser un valor positivo.' });
+      setLoading(false);
+      return;
+    }
+
+    const formData = {
+      ...form,
+      price: price,
+      releaseDate: formattedReleaseDate.toISOString(),
+    };
+
     try {
-      setLoading(true);
-      setErrors({});
-
-
-      const formattedReleaseDate = new Date(form.releaseDate || '');
-      if (isNaN(formattedReleaseDate.getTime())) {
-        setErrors({ message: "Fecha de lanzamiento inválida." });
-        return;
-      }
-  
-      const formData = {
-        ...form,
-        price: Number(form.price),
-        releaseDate: formattedReleaseDate.toISOString(),
-      };
-  
       if (id) {
         await GameOfferService.update(Number(id), formData);
       } else {
         await GameOfferService.create(formData);
       }
-  
       toast.success('Oferta de juego guardada correctamente!');
       navigate('/game-offers');
     } catch (error) {
@@ -81,19 +91,20 @@ function GameOfferForm() {
       setLoading(false);
     }
   };
-  
 
+  // Manejo de cambios en los campos del formulario
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { value, name } = e.target;
     setForm({ ...form, [name]: value });
   };
 
+  // Manejo de cambio en el checkbox (activa/inactiva)
   const handleChangeCheckbox = (e: ChangeEvent<HTMLInputElement>) => {
     const { checked, name } = e.target;
     setForm({ ...form, [name]: checked });
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Cargando...</p>;
 
   return (
     <div className="text-white flex flex-col">
@@ -104,7 +115,7 @@ function GameOfferForm() {
       <form className="max-w-sm mx-auto min-w-sm" onSubmit={handleSubmit}>
         <InputForm text="Título" name="title" value={form.title || ''} handleChange={handleChange} error={errors.title} />
         <TextAreaInputForm rows={6} text="Descripción" name="description" value={form.description || ''} handleChange={handleChange} error={errors.description} />
-        <InputForm text="Precio" name="price" type="number" value={form.price?.toString() || ''} handleChange={handleChange} error={errors.price} />
+        <InputForm type="number" text="Precio" name="price" value={form.price?.toString() || ''} handleChange={handleChange} error={errors.price} />
         <InputForm type="date" text="Fecha de lanzamiento" name="releaseDate" value={form.releaseDate || ''} handleChange={handleChange} error={errors.releaseDate} />
         <InputForm type="checkbox" text="Activa" name="active" checked={form.active} handleChange={handleChangeCheckbox} error={errors.active} />
 

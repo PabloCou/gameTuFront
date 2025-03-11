@@ -20,7 +20,7 @@ export class GameOfferService {
                 credentials: 'include'
             });
 
-            return response as GameOffer[]; 
+            return response as GameOffer[];
         } catch (error) {
             console.error('Error en search:', error);
             throw new Error('Error al obtener las ofertas de juegos.');
@@ -37,7 +37,7 @@ export class GameOfferService {
                 credentials: 'include'
             });
 
-            return response as GameOffer; 
+            return response as GameOffer;
         } catch (error) {
             console.error('Error en getById:', error);
             throw new Error(`Error al obtener la oferta de juego con ID ${id}.`);
@@ -47,17 +47,18 @@ export class GameOfferService {
     static async create(gameOffer: Partial<GameOffer>): Promise<GameOffer> {
         try {
             console.log('Datos a enviar:', gameOffer);
-            console.log('URL de la petición:', `${API_URL_BASE}/api/game-offers/new`);  // Asegúrate de que la URL sea correcta
+            console.log('URL de la petición:', `${API_URL_BASE}/api/game-offers/new`);
 
+            // Aquí nos aseguramos de que solo la URL del endpoint sea añadida
             const response = await fetchAPI(`${API_URL_BASE}/api/game-offers/new`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(gameOffer),
-                credentials: 'include', 
+                credentials: 'include',
             });
-      
+
             return response as GameOffer;
         } catch (error) {
             if (error instanceof Error) {
