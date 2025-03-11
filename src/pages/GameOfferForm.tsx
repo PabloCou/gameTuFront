@@ -42,15 +42,25 @@ function GameOfferForm() {
       setLoading(true);
       setErrors({});
 
+
+      const formattedReleaseDate = new Date(form.releaseDate || '');
+      if (isNaN(formattedReleaseDate.getTime())) {
+        setErrors({ message: "Fecha de lanzamiento inválida." });
+        return;
+      }
+  
       const formData = {
         ...form,
         price: Number(form.price),
-        releaseDate: new Date(form.releaseDate || '').toISOString(),
+        releaseDate: formattedReleaseDate.toISOString(),
       };
-
-      if (id) await GameOfferService.update(Number(id), formData);
-      else await GameOfferService.create(formData);
-
+  
+      if (id) {
+        await GameOfferService.update(Number(id), formData);
+      } else {
+        await GameOfferService.create(formData);
+      }
+  
       toast.success('Oferta de juego guardada correctamente!');
       navigate('/game-offers');
     } catch (error) {
@@ -71,6 +81,7 @@ function GameOfferForm() {
       setLoading(false);
     }
   };
+  
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { value, name } = e.target;

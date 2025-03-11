@@ -19,13 +19,7 @@ export class GameOfferService {
                 credentials: 'include'
             });
 
-            // Verifica que la respuesta es válida (código 2xx) y devuelve los datos en JSON
-            if (!response.ok) {
-                const errorText = await response.text();  // Extrae el cuerpo de la respuesta como texto
-                throw new Error(`Error: ${response.status} - ${errorText}`);
-            }
-
-            return response.json() as GameOffer[];  // Convierte la respuesta a JSON
+            return response as GameOffer[]; 
         } catch (error) {
             console.error('Error en search:', error);
             throw new Error('Error al obtener las ofertas de juegos.');
@@ -42,13 +36,7 @@ export class GameOfferService {
                 credentials: 'include'
             });
 
-            // Verifica la respuesta
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error: ${response.status} - ${errorText}`);
-            }
-
-            return response.json() as GameOffer;
+            return response as GameOffer; 
         } catch (error) {
             console.error('Error en getById:', error);
             throw new Error(`Error al obtener la oferta de juego con ID ${id}.`);
@@ -57,24 +45,33 @@ export class GameOfferService {
 
     static async create(gameOffer: Partial<GameOffer>): Promise<GameOffer> {
         try {
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers`, {
+            // Agregamos logs para debug
+            console.log('Datos a enviar:', gameOffer);
+            console.log('URL de la petición:', `${API_URL_BASE}/game-offers/new`);
+
+            const response = await fetchAPI(`${API_URL_BASE}/game-offers/new`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(gameOffer),
-                credentials: 'include'
+                credentials: 'include', 
             });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error: ${response.status} - ${errorText}`);
-            }
-
-            return response.json() as GameOffer;
+      
+            return response as GameOffer;
         } catch (error) {
-            console.error('Error en create:', error);
-            throw new Error('Error al crear la oferta de juego.');
+            // Mejorar el manejo de errores
+            if (error instanceof Error) {
+                console.error('Error al crear la oferta:', error.message);
+                if (error.message.includes('401')) {
+                    throw new Error('No tienes autorización para crear ofertas. Por favor, inicia sesión.');
+                }
+                if (error.message.includes('403')) {
+                    throw new Error('No tienes permisos suficientes para crear ofertas.');
+                }
+                throw new Error(`Error al crear la oferta: ${error.message}`);
+            }
+            throw new Error('Error desconocido al crear la oferta de juego.');
         }
     }
 
@@ -89,12 +86,7 @@ export class GameOfferService {
                 credentials: 'include'
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error: ${response.status} - ${errorText}`);
-            }
-
-            return response.json() as GameOffer;
+            return response as GameOffer;
         } catch (error) {
             console.error('Error en update:', error);
             throw new Error(`Error al actualizar la oferta de juego con ID ${id}.`);
@@ -103,21 +95,65 @@ export class GameOfferService {
 
     static async delete(id: number): Promise<void> {
         try {
-            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
+            await fetchAPI(`${API_URL_BASE}/game-offers/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include'
             });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error: ${response.status} - ${errorText}`);
-            }
         } catch (error) {
             console.error('Error en delete:', error);
             throw new Error(`Error al eliminar la oferta de juego con ID ${id}.`);
+        }
+    }
+
+    // Nuevos métodos para calificaciones
+    static async rateOffer(id: number, rating: number): Promise<void> {
+        try {
+            await fetchAPI(`${API_URL_BASE}/game-offers/${id}/rate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ rating }),
+                credentials: 'include'
+            });
+        } catch (error) {
+            console.error('Error al calificar la oferta:', error);
+            throw new Error('Error al calificar la oferta de juego.');
+        }
+    }
+
+    static async getOfferRate(id: number): Promise<number> {
+        try {
+            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}/rate`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            return response as number;
+        } catch (error) {
+            console.error('Error al obtener la calificación:', error);
+            throw new Error('Error al obtener la calificación de la oferta.');
+        }
+    }
+
+    static async getMyRate(id: number): Promise<number> {
+        try {
+            const response = await fetchAPI(`${API_URL_BASE}/game-offers/${id}/myRate`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            return response as number;
+        } catch (error) {
+            console.error('Error al obtener mi calificación:', error);
+            throw new Error('Error al obtener tu calificación de la oferta.');
         }
     }
 }
