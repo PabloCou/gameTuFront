@@ -13,15 +13,4 @@ export class UserService {
       credentials: "include",
     });
   }
-  static async getProfile() {
-    return await fetchAPI(API_URL_BASE + "/users/profile", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-
-  }
 }
-
