@@ -19,10 +19,9 @@ function Login() {
     // mensaje por post al api del backend
     try{
       //await AuthService.loginUser(form.email, form.password) // backend
-      await login(form.email, form.password) // llamada al contexto
+      await login(form.email, form.password)
       setMessage('login successfull')
-      navigate("/offers");
-      // Redirigir a otra pagina (ofertas)
+      navigate("/home");
     }catch(error){
       const msg = error instanceof Error ? error.message : 'Error desconocido'
       setMessage(msg)

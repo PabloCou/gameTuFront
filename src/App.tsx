@@ -14,6 +14,8 @@ import Footer from "./components/Footer";
 import CategoryManager from "./pages/CategoryManager";
 import ComplaintsForm from "./pages/ComplaintForm";
 import ComplaintsList from "./pages/Complaints";
+import NewsList from "./pages/News";
+import NewsForm from "./pages/NewsForm";
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
               <Route path="/userList" element={<UserList />} />
               <Route path="/newComplaint" element={<ComplaintsForm />} />
               <Route path="/complaints" element={<ComplaintsList />} />
+              <Route path="/news" element={<NewsList />} />
+              <Route path="/news/new" element={<NewsForm />} />
               <Route path="/game-offers" element={<GameOfferList />} />
               <Route path="/game-offers/:id" element={<GameOfferDetail />} />
               <Route path="/game-offers/new" element={<GameOfferForm />} />

@@ -1,22 +1,16 @@
 import { useEffect, useState } from 'react'
-import { fetchAPI } from '../utils/FetchAPI'
-import { useAuth } from '../contexts/AuthContext'
+import { UserService } from '../services/userService'
 
 interface User {
   id: number
   name: string
   surname: string
   role: string
-  course: string
   email: string
   active: boolean
   accepNotifications: boolean
 }
-
-const API_URL_BASE = import.meta.env.VITE_API_URL_BASE
-
 function UserList() {
-  const {user} = useAuth()
   const [users, setUsers] = useState<User[]>([])
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(true)
@@ -24,14 +18,7 @@ function UserList() {
   useEffect(()=>{
     async function call(){
       try{
-        const userList =  await fetchAPI(API_URL_BASE + `/user/usuarios?id=${user?.id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-        
+        const userList = await UserService.getAll()
         setUsers(userList)      
       }catch(error){
         const msg = error instanceof Error ? error.message : 'Error desconocido'
@@ -58,6 +45,9 @@ function UserList() {
               Nombre
             </th>
             <th scope="col" className="px-6 py-3">
+              Apellido
+            </th>
+            <th scope="col" className="px-6 py-3">
               Email
             </th>
             <th scope="col" className="px-6 py-3">
@@ -72,12 +62,14 @@ function UserList() {
               {user.name}
             </th>
             <td className="px-6 py-4">
+              {user.surname}
+            </td>
+            <td className="px-6 py-4">
               {user.email}
             </td>
             <td className="px-6 py-4">
               {user.role}
             </td>
-           
           </tr>
         )}
 
